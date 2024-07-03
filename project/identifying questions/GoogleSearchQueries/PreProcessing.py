@@ -1,18 +1,26 @@
 import pandas as pd
 import os
+import sys
 
 # Specify the directory containing the CSV files
-directory = '/Users/vince/Downloads/archive'
-output_file = 'aggregated_unique_values.csv'
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+dataset_dir = os.path.join(current_dir, 'KaggleDataset')
+output_file = os.path.join(current_dir, 'TrainingDataNonQuestions.csv')
+
+if os.path.exists(output_file):
+    print(f"Error: The file '{output_file}' already exists.")
+    sys.exit(1)
+
 
 # List to hold data from all CSV files
 all_data = []
 
 # Loop through each file in the directory
-for filename in os.listdir(directory):
+for filename in os.listdir(dataset_dir):
     if filename.endswith('.csv'):
         # Full path to the CSV file
-        file_path = os.path.join(directory, filename)
+        file_path = os.path.join(dataset_dir, filename)
         
         # Load the CSV file
         try:

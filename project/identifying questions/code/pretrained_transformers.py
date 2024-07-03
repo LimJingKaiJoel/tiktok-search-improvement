@@ -1,9 +1,8 @@
 from transformers import pipeline
 
-# Load the pre-trained model for question detection
+# shahrukh pretrained model
 question_detection_model = pipeline("text-classification", model="shahrukhx01/bert-mini-finetune-question-detection")
 
-# Prediction
 test_sentence = "you are eating apples"
 prediction = question_detection_model(test_sentence)
 

@@ -43,7 +43,7 @@ for col in combined_data.columns:
 unique_values.discard('nan')
 
 # Convert the set to a DataFrame
-unique_values_df = pd.DataFrame(list(unique_values), columns=['Unique Values'])
+unique_values_df = pd.DataFrame(list(unique_values), columns=['non question'])
 
 # Save the unique values to a new CSV file
 unique_values_df.to_csv(output_file, index=False)

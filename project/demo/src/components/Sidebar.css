@@ -1,0 +1,37 @@
+.sidebar {
+    position: absolute;
+    right: 0;
+    bottom: 60px; /* Adjust to be right above the navigation bar */
+    width: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .sidebar-item {
+    margin: 6px 0;
+    text-align: center;
+  }
+
+  .text {
+    font-size: 13px; /* Set custom size between 1x and 2x */
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8); /* Add shadow effect outline */
+  }
+  
+
+  .custom-icon {
+    cursor: pointer;
+    font-size: 1.2rem; /* Set custom size between 1x and 2x */
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8); /* Add shadow effect outline */
+  }
+  .custom-icon-profile {
+    cursor: pointer;
+    font-size: 2rem; /* Set custom size between 1x and 2x */
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8); /* Add shadow effect outline */
+  }
+  
+  

@@ -1,0 +1,95 @@
+.search-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    padding: 5px 10px; /* Reduced padding at the top */
+    box-sizing: border-box;
+  }
+  
+  .search-bar {
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    padding-bottom: 10px;
+  }
+  
+  .back-button {
+    color: black;
+    font-size: 16px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+  
+  .search-bar input {
+    font-size: 13px;
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    height: 10px;
+    width: 100%; /* Set a fixed width for the input */
+    margin: 0 10px;
+    border-radius: 4px;
+  }
+  
+  .search-button {
+    font-size: 13px;
+    background: none;
+    border: none;
+    color: red;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .search-button.disabled {
+    color: gray;
+    cursor: not-allowed;
+  }
+  
+  
+  .suggestions {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Align items to the left */
+    padding-left: 5px;
+  }
+  
+  .suggestions h3 {
+    font-size: 16px;
+    margin: 0px;
+    color: black;
+    text-align: left; /* Align text to the left */
+  }
+  
+  .suggestions ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+  }
+  
+  .suggestions li {
+    font-size: 13px;
+    margin: 5px 0;
+    cursor: pointer;
+    color: black;
+    display: flex;
+    align-items: center;
+  }
+  
+  .suggestions li::before {
+    content: '•';
+    margin-right: 10px;
+  }
+  
+  .prediction-result {
+    color: black;
+  }

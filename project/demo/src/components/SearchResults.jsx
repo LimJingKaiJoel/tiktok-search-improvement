@@ -9,7 +9,7 @@ const SearchResults = ({ query, onBack }) => {
     if (query) {
       const fetchPrediction = async () => {
         try {
-          const response = await axios.post('https://tiktok-clone-580w.onrender.com/predict', { text: query });
+          const response = await axios.post('https://tiktok-search-improvement.onrender.com/predict', { text: query });
           setPrediction(response.data.prediction);
         } catch (error) {
           console.error('Error fetching prediction:', error);

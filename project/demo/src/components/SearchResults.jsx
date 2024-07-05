@@ -1,10 +1,18 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Configuration, OpenAIApi } from 'openai';
 import './SearchResults.css';
+
+// Ensure you have your OpenAI API key stored securely
+const configuration = new Configuration({
+  apiKey: process.env.REACT_APP_OPENAI_API_KEY,
+});
+const openai = new OpenAIApi(configuration);
 
 const SearchResults = ({ query, onBack, onNavigate }) => {
   const [prediction, setPrediction] = useState('Loading...');
   const [loading, setLoading] = useState(true);
+  const [answer, setAnswer] = useState('');
 
   useEffect(() => {
     if (query) {
@@ -13,6 +21,12 @@ const SearchResults = ({ query, onBack, onNavigate }) => {
           setLoading(true);
           const response = await axios.post('https://tiktok-search-improvement.onrender.com/predict', { text: query });
           setPrediction(response.data.prediction);
+
+          if (response.data.prediction === 'Question') {
+            const answer = await fetchAnswerFromOpenAI(query);
+            setAnswer(answer);
+          }
+
           setLoading(false);
         } catch (error) {
           console.error('Error fetching prediction:', error);
@@ -24,6 +38,27 @@ const SearchResults = ({ query, onBack, onNavigate }) => {
       fetchPrediction();
     }
   }, [query]);
+
+  const fetchAnswerFromOpenAI = async (qn) => {
+    try {
+      const prompt = `In 1 or 2 sentences, answer the following concisely: ${qn}`;
+      const completion = await openai.createChatCompletion({
+        model: 'gpt-3.5-turbo-0125',
+        messages: [
+          {
+            role: 'user',
+            content: prompt,
+          },
+        ],
+      });
+
+      return completion.data.choices[0].message.content;
+    } catch (error) {
+      console.error('Error fetching answer from OpenAI:', error);
+      return 'Error fetching answer';
+    }
+  };
+
   return (
     <div className="search-results">
       <div className="search-bar">
@@ -51,6 +86,7 @@ const SearchResults = ({ query, onBack, onNavigate }) => {
               <p><strong>Question</strong></p>
               <p>Your query is a question, would you like some AI recommendations?</p>
               <button className="recommendation-button" onClick={onNavigate}>Get AI Recommendations</button>
+              <p><strong>Answer from AI:</strong> {answer}</p>
             </>
           ) : (
             <>

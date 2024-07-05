@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import openai from 'openai';
 import './SearchResults.css';
 
 const SearchResults = ({ query, onBack }) => {
@@ -30,18 +29,8 @@ const SearchResults = ({ query, onBack }) => {
   const handleGetRecommendations = async () => {
     try {
       setLoading(true);
-      openai.api_key = process.env.REACT_APP_OPENAI_API_KEY;
-      const prompt = `In 1 sentence, answer the following concisely: ${query}`;
-      const response = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo-0125",
-        messages: [
-          {
-            "role": "user",
-            "content": prompt,
-          },
-        ],
-      });
-      setAiRecommendation(response.choices[0].message.content);
+      const response = await axios.post('http://localhost:3000/api/openai', { query });
+      setAiRecommendation(response.data.recommendation);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching AI recommendation:', error);

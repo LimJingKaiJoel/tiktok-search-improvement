@@ -7,8 +7,8 @@ const SearchResults = ({ query, onBack, onNavigate }) => {
   const [prediction, setPrediction] = useState('Loading...');
   const [loading, setLoading] = useState(true);
   const [aiRecommendation, setAiRecommendation] = useState('');
-  const openai = new OpenAI({ apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY, dangerouslyAllowBrowser: true });
-
+  const openai = new OpenAI({ apiKey: import.meta.env.VITE_OPENAI_API_KEY, dangerouslyAllowBrowser: true });
+  
   useEffect(() => {
     if (query) {
       const fetchPrediction = async () => {

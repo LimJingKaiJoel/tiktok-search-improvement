@@ -12,7 +12,7 @@
   box-sizing: border-box;
 }
 
-.search-bar {
+.search-bar-disabled {
   font-size: 13px;
   display: flex;
   align-items: center;
@@ -21,14 +21,10 @@
 
 .back-button {
   color: black;
-  font-size: 16px;
-  background: none;
-  border: none;
   cursor: pointer;
-  padding: 0;
 }
 
-.search-bar input {
+.search-bar-disabled input {
   font-size: 13px;
   flex: 1;
   padding: 10px;
@@ -37,6 +33,7 @@
   width: 100%; /* Set a fixed width for the input */
   margin: 0 10px;
   border-radius: 4px;
+  pointer-events: none;
 }
 
 .results {
@@ -52,7 +49,6 @@
 .tab {
   font-size: 9px;
   color: black;
-  cursor: pointer;
   border-bottom: 2px solid transparent;
 }
 

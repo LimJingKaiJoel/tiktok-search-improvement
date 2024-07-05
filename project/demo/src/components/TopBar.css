@@ -23,7 +23,6 @@
   
   .top-bar-item {
     margin: 0 10px;
-    cursor: pointer;
   }
   
   .top-bar-item.active {
@@ -31,12 +30,12 @@
   }
   
   .top-bar-search {
+    cursor: pointer;
     position: absolute;
     right: 12px; /* Position it from the right edge */
   }
   
   .top-bar-search svg {
     fill: #fff;
-    cursor: pointer;
   }
   

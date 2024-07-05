@@ -1,7 +1,18 @@
 import { useState } from 'react';
 import './SearchScreen.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
-const SearchScreen = ({ onClose, onSubmit }) => {
+const suggestions = [
+  'How Do I Win A Hackathon 🔥',
+  'Programming',
+  'TikTok TechJam',
+  'What Is The Most Beautiful Country 🔥',
+  'Best Cafe In Singapore',
+  'Where Do I Learn To Program 🔥'
+];
+
+const SearchScreen = ({ onBack, onSubmit }) => {
   const [query, setQuery] = useState('');
 
   const handleInputChange = (e) => {
@@ -21,10 +32,15 @@ const SearchScreen = ({ onClose, onSubmit }) => {
     }
   };
 
+  const handleSuggestionClick = (suggestion) => {
+    const cleanedQuery = suggestion.replace(/🔥/g, '').trim();
+    onSubmit(cleanedQuery);
+  };
+
   return (
     <div className="search-screen">
       <div className="search-bar">
-        <button className="back-button" onClick={onClose}>←</button>
+        <FontAwesomeIcon className="back-button" icon={faArrowLeft} onClick={onBack}/>
         <input
           type="text"
           placeholder="Search"
@@ -42,11 +58,11 @@ const SearchScreen = ({ onClose, onSubmit }) => {
       <div className="suggestions">
         <h3>You may like</h3>
         <ul>
-          <li>Lego Filter 🔥</li>
-          <li>Programming</li>
-          <li>TikTok TechJam 🔥</li>
-          <li>Singapore City</li>
-          <li>Best Cafe In Singapore</li>
+          {suggestions.map((suggestion, index) => (
+            <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
+              {suggestion}
+            </li>
+          ))}
         </ul>
       </div>
     </div>

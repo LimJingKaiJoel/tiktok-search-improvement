@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import './SearchResults.css';
 import OpenAI from "openai";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 const SearchResults = ({ query, onBack, onNavigate }) => {
   const [prediction, setPrediction] = useState('Loading...');
@@ -55,8 +57,8 @@ const SearchResults = ({ query, onBack, onNavigate }) => {
 
   return (
     <div className="search-results">
-      <div className="search-bar">
-        <button className="back-button" onClick={onBack}>←</button>
+      <div className="search-bar-disabled">
+      <FontAwesomeIcon className="back-button" icon={faArrowLeft} onClick={onBack}/>
         <input type="text" value={query} readOnly />
       </div>
       <div className="results">

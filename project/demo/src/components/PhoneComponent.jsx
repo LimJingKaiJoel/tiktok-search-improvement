@@ -34,7 +34,7 @@ const PhoneComponent = () => {
       <div className="phone">
         <div className="phone-screen">
           {screen === 'search' ? (
-            <SearchScreen onClose={handleCloseSearch} onSubmit={handleSearchSubmit} />
+            <SearchScreen onBack={handleCloseSearch} onSubmit={handleSearchSubmit} />
           ) : screen === 'results' ? (
             <SearchResults query={searchQuery} onBack={handleBackFromResults} />
           ) : (

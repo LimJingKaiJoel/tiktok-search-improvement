@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import openai from 'openai';
 import './SearchResults.css';
+import OpenAI from "openai";
 
-const SearchResults = ({ query, onBack }) => {
+const SearchResults = ({ query, onBack, onNavigate }) => {
   const [prediction, setPrediction] = useState('Loading...');
   const [loading, setLoading] = useState(true);
+  const openai = new OpenAI();
   const [aiRecommendation, setAiRecommendation] = useState('');
 
   useEffect(() => {
@@ -15,10 +16,10 @@ const SearchResults = ({ query, onBack }) => {
           setLoading(true);
           const response = await axios.post('https://tiktok-search-improvement.onrender.com/predict', { text: query });
           setPrediction(response.data.prediction);
-          setLoading(false);
         } catch (error) {
           console.error('Error fetching prediction:', error);
           setPrediction('Error');
+        } finally {
           setLoading(false);
         }
       };
@@ -42,10 +43,10 @@ const SearchResults = ({ query, onBack }) => {
         ],
       });
       setAiRecommendation(response.choices[0].message.content);
-      setLoading(false);
     } catch (error) {
       console.error('Error fetching AI recommendation:', error);
       setAiRecommendation('Error fetching AI recommendation');
+    } finally {
       setLoading(false);
     }
   };

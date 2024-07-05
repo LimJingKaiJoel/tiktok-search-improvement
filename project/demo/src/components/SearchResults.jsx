@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import './SearchResults.css';
+import OpenAI from "openai";
 
 const SearchResults = ({ query, onBack, onNavigate }) => {
   const [prediction, setPrediction] = useState('Loading...');
   const [loading, setLoading] = useState(true);
+  const [aiRecommendation, setAiRecommendation] = useState('');
+  const openai = new OpenAI({ apiKey: import.meta.env.VITE_OPENAI_API_KEY, dangerouslyAllowBrowser: true });
 
   useEffect(() => {
     if (query) {
@@ -13,10 +16,10 @@ const SearchResults = ({ query, onBack, onNavigate }) => {
           setLoading(true);
           const response = await axios.post('https://tiktok-search-improvement.onrender.com/predict', { text: query });
           setPrediction(response.data.prediction);
-          setLoading(false);
         } catch (error) {
           console.error('Error fetching prediction:', error);
           setPrediction('Error');
+        } finally {
           setLoading(false);
         }
       };
@@ -24,6 +27,29 @@ const SearchResults = ({ query, onBack, onNavigate }) => {
       fetchPrediction();
     }
   }, [query]);
+
+  const handleGetRecommendations = async () => {
+    try {
+      setLoading(true);
+      const prompt = `In 1 sentence, answer the following concisely: ${query}`;
+      const response = await openai.chat.completions.create({
+        model: "gpt-3.5-turbo-0125",
+        messages: [
+          {
+            "role": "user",
+            "content": prompt,
+          },
+        ],
+      });
+      setAiRecommendation(response.choices[0].message.content);
+    } catch (error) {
+      console.error('Error fetching AI recommendation:', error);
+      setAiRecommendation('Error fetching AI recommendation');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="search-results">
       <div className="search-bar">
@@ -50,7 +76,13 @@ const SearchResults = ({ query, onBack, onNavigate }) => {
             <>
               <p><strong>Question</strong></p>
               <p>Your query is a question, would you like some AI recommendations?</p>
-              <button className="recommendation-button" onClick={onNavigate}>Get AI Recommendations</button>
+              <button className="recommendation-button" onClick={handleGetRecommendations}>Get AI Recommendations</button>
+              {aiRecommendation && (
+                <div className="ai-recommendation">
+                  <p><strong>AI Recommendation:</strong></p>
+                  <p>{aiRecommendation}</p>
+                </div>
+              )}
             </>
           ) : (
             <>

@@ -15,6 +15,12 @@ const SearchScreen = ({ onClose, onSubmit }) => {
     onSubmit(query);
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
   return (
     <div className="search-screen">
       <div className="search-bar">
@@ -24,6 +30,7 @@ const SearchScreen = ({ onClose, onSubmit }) => {
           placeholder="Search"
           value={query}
           onChange={handleInputChange}
+          onKeyPress={handleKeyPress}
         />
         <button
           className={`search-button ${query.trim() === '' ? 'disabled' : ''}`}

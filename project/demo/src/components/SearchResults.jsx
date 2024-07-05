@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import openai from 'openai';
 import './SearchResults.css';
 
-const SearchResults = ({ query, onBack, onNavigate }) => {
+const SearchResults = ({ query, onBack }) => {
   const [prediction, setPrediction] = useState('Loading...');
   const [loading, setLoading] = useState(true);
+  const [aiRecommendation, setAiRecommendation] = useState('');
 
   useEffect(() => {
     if (query) {
@@ -24,6 +26,30 @@ const SearchResults = ({ query, onBack, onNavigate }) => {
       fetchPrediction();
     }
   }, [query]);
+
+  const handleGetRecommendations = async () => {
+    try {
+      setLoading(true);
+      openai.api_key = process.env.REACT_APP_OPENAI_API_KEY;
+      const prompt = `In 1 sentence, answer the following concisely: ${query}`;
+      const response = await openai.chat.completions.create({
+        model: "gpt-3.5-turbo-0125",
+        messages: [
+          {
+            "role": "user",
+            "content": prompt,
+          },
+        ],
+      });
+      setAiRecommendation(response.choices[0].message.content);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching AI recommendation:', error);
+      setAiRecommendation('Error fetching AI recommendation');
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="search-results">
       <div className="search-bar">
@@ -50,7 +76,13 @@ const SearchResults = ({ query, onBack, onNavigate }) => {
             <>
               <p><strong>Question</strong></p>
               <p>Your query is a question, would you like some AI recommendations?</p>
-              <button className="recommendation-button" onClick={onNavigate}>Get AI Recommendations</button>
+              <button className="recommendation-button" onClick={handleGetRecommendations}>Get AI Recommendations</button>
+              {aiRecommendation && (
+                <div className="ai-recommendation">
+                  <p><strong>AI Recommendation:</strong></p>
+                  <p>{aiRecommendation}</p>
+                </div>
+              )}
             </>
           ) : (
             <>

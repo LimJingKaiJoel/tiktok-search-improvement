@@ -6,8 +6,8 @@ import OpenAI from "openai";
 const SearchResults = ({ query, onBack, onNavigate }) => {
   const [prediction, setPrediction] = useState('Loading...');
   const [loading, setLoading] = useState(true);
-  const openai = new OpenAI();
   const [aiRecommendation, setAiRecommendation] = useState('');
+  const openai = new OpenAI({ apiKey: import.meta.env.VITE_OPENAI_API_KEY, dangerouslyAllowBrowser: true });
 
   useEffect(() => {
     if (query) {
@@ -31,7 +31,6 @@ const SearchResults = ({ query, onBack, onNavigate }) => {
   const handleGetRecommendations = async () => {
     try {
       setLoading(true);
-      openai.api_key = process.env.REACT_APP_OPENAI_API_KEY;
       const prompt = `In 1 sentence, answer the following concisely: ${query}`;
       const response = await openai.chat.completions.create({
         model: "gpt-3.5-turbo-0125",

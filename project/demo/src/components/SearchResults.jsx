@@ -59,7 +59,7 @@ const SearchResults = ({ query, onBack, onNavigate }) => {
             messages: [
               {
                 "role": "user",
-                "content": keywordsPrompt, innovative, functional, technically impressive
+                "content": keywordsPrompt
               },
             ],
           });

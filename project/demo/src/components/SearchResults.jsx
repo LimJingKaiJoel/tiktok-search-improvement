@@ -3,28 +3,28 @@ import axios from 'axios';
 import './SearchResults.css';
 import OpenAI from "openai";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
 
 const SearchResults = ({ query, onBack, onNavigate }) => {
   const [prediction, setPrediction] = useState('Loading...');
-  const [loading, setLoading] = useState(true);
-  const [aiRecommendation, setAiRecommendation] = useState('');
+  const [loadingPrediction, setLoadingPrediction] = useState(true);
   const [loadingRecommendation, setLoadingRecommendation] = useState(false);
-  const [recommendationFetched, setRecommendationFetched] = useState(false);
+  const [aiRecommendation, setAiRecommendation] = useState('');
   const openai = new OpenAI({ apiKey: import.meta.env.VITE_OPENAI_API_KEY, dangerouslyAllowBrowser: true });
 
   useEffect(() => {
     if (query) {
       const fetchPrediction = async () => {
         try {
-          setLoading(true);
+          setLoadingPrediction(true);
+          setAiRecommendation('');  // Clear previous recommendation
           const response = await axios.post('https://tiktok-search-improvement.onrender.com/predict', { text: query });
           setPrediction(response.data.prediction);
         } catch (error) {
           console.error('Error fetching prediction:', error);
           setPrediction('Error');
         } finally {
-          setLoading(false);
+          setLoadingPrediction(false);
         }
       };
 
@@ -32,33 +32,38 @@ const SearchResults = ({ query, onBack, onNavigate }) => {
     }
   }, [query]);
 
-  const handleGetRecommendations = async () => {
-    try {
-      setLoadingRecommendation(true);
-      const prompt = `In 1 sentence, answer the following concisely: ${query}`;
-      const response = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo-0125",
-        messages: [
-          {
-            "role": "user",
-            "content": prompt,
-          },
-        ],
-      });
-      setAiRecommendation(response.choices[0].message.content);
-      setRecommendationFetched(true);
-    } catch (error) {
-      console.error('Error fetching AI recommendation:', error);
-      setAiRecommendation('Error fetching AI recommendation');
-    } finally {
-      setLoadingRecommendation(false);
+  useEffect(() => {
+    if (prediction === 'Question') {
+      const handleGetRecommendations = async () => {
+        try {
+          setLoadingRecommendation(true);
+          const prompt = `In 1 sentence, answer the following concisely: ${query}`;
+          const response = await openai.chat.completions.create({
+            model: "gpt-3.5-turbo-0125",
+            messages: [
+              {
+                "role": "user",
+                "content": prompt,
+              },
+            ],
+          });
+          setAiRecommendation(response.choices[0].message.content);
+        } catch (error) {
+          console.error('Error fetching AI recommendation:', error);
+          setAiRecommendation('Error fetching AI recommendation');
+        } finally {
+          setLoadingRecommendation(false);
+        }
+      };
+
+      handleGetRecommendations();
     }
-  };
+  }, [prediction]);
 
   return (
     <div className="search-results">
       <div className="search-bar-disabled">
-      <FontAwesomeIcon className="back-button" icon={faArrowLeft} onClick={onBack}/>
+        <FontAwesomeIcon className="back-button" icon={faArrowLeft} onClick={onBack} />
         <input type="text" value={query} readOnly />
       </div>
       <div className="results">
@@ -71,35 +76,22 @@ const SearchResults = ({ query, onBack, onNavigate }) => {
           <div className="tab">LIVE</div>
           <div className="tab">Playlists</div>
         </div>
-        <div className={`prediction-box ${loadingRecommendation || loading ? 'loading' : prediction === 'Question' ? 'question' : 'non-question'}`}>
-          {loading ? (
-            <>
-              <p><strong>Loading...</strong></p>
-              <p>This might take more than 50s if the serverless infrastructure is not started</p>
-            </>
-          ) : (
-            <>
-              {loadingRecommendation ? (
-                <p><strong>Loading AI Recommendations...</strong></p>
-              ) : recommendationFetched ? (
-                <>
-                  <p><strong>AI Recommendation:</strong></p>
-                  <p>{aiRecommendation}</p>
-                </>
-              ) : prediction === 'Question' ? (
-                <>
-                  <p><strong>Question</strong></p>
-                  <p>Your query is a question, would you like some AI recommendations?</p>
-                  <button className="recommendation-button" onClick={handleGetRecommendations}>Get AI Recommendations</button>
-                </>
-              ) : (
-                <>
-                  <p><strong>Non-Question</strong></p>
-                  <p>Your query is not a question, so no specific AI recommendations are displayed</p>
-                </>
-              )}
-            </>
-          )}
+        <div className="ai-suggestion-box">
+          <div className="ai-recommendation-content">
+            <p><strong>
+              <FontAwesomeIcon className="wand-icon" icon={faWandMagicSparkles} />
+              Tiktok Assistant</strong></p>
+            <p>
+              {loadingPrediction
+                ? "Loading prediction..."
+                : prediction === 'Question'
+                ? loadingRecommendation
+                  ? "Your query has been identified to be a question, loading recommendations"
+                  : aiRecommendation
+                : "Your query is not a question, so no specific AI recommendations are displayed"}
+            </p>
+            <p className="disclaimer">Always verify important information.</p>
+          </div>
         </div>
         <div className="result-items">
           <div className="result-item">

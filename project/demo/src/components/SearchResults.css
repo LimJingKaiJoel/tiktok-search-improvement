@@ -8,7 +8,7 @@
   z-index: 100;
   display: flex;
   flex-direction: column;
-  padding: 5px 10px; /* Reduced padding at the top */
+  padding: 5px 10px;
   box-sizing: border-box;
 }
 
@@ -16,7 +16,7 @@
   font-size: 13px;
   display: flex;
   align-items: center;
-  margin-bottom: 5px; /* Reduce space between search bar and suggestions */
+  margin-bottom: 5px;
 }
 
 .back-button {
@@ -30,7 +30,7 @@
   padding: 10px;
   border: 1px solid #ccc;
   height: 10px;
-  width: 100%; /* Set a fixed width for the input */
+  width: 100%;
   margin: 0 10px;
   border-radius: 4px;
   pointer-events: none;
@@ -43,7 +43,7 @@
 .tabs {
   display: flex;
   justify-content: space-around;
-  margin-bottom: 20px;
+  margin-bottom: 5px; /* Reduced space between tabs and AI recommendations */
 }
 
 .tab {
@@ -79,51 +79,36 @@
   font-size: 14px;
 }
 
-.prediction-box {
-  color: black;
-  font-size: 12px; /* Increased font size for better readability */
-  padding: 5px 15px; /* Increased padding for better spacing */
-  border-radius: 10px; /* Rounded corners for a softer look */
-  text-align: left;
-  margin-top: 10px;  /* Adjusted margin */
-  margin-bottom: 10px;  /* Adjusted margin */
-  border: 1px solid black;  /* Black border */
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Added subtle shadow for depth */
+.wand-icon {
+  margin-right: 5px;
 }
 
-.prediction-box.loading {
+.ai-suggestion-box {
+  font-size: 12px;
+  padding: 2px 15px; /* Added padding for text */
+  margin: 0 -10px; /* Negative margin to extend background to edges */
+  background-color: #ff64c629;
+}
+
+.ai-suggestion-box.loading {
   background-color: #ffff66;
 }
 
-.prediction-box.question {
-  background-color: #28a745; /* Changed green color for better aesthetics */
-  color: white;
+.ai-recommendation-content {
+  color: #000;
+  text-align: left; /* Align text to the left */
 }
 
-.prediction-box.non-question {
-  background-color: #ff5733; /* Changed orange color for better aesthetics */
-  color: white;
+.ai-recommendation-content p {
+  margin: 5px 0;
 }
 
-/* Ensuring minimal padding for paragraphs within the prediction box */
-.prediction-box p {
-  margin: 5px 0;  /* Slight margin for paragraphs */
-  padding: 2px 0;  /* Minimal top/bottom padding */
+.ai-recommendation-content strong {
+  color: #9900ff; /* TikTok Assistant text color in purple */
 }
 
-.recommendation-button {
-  width: 100%;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 10px 20px; /* Increased padding for a better button size */
-  border-radius: 5px;
-  cursor: pointer;
-  margin-bottom: 5px;
-  font-size: 12px; /* Increased font size for better readability */
-  transition: background-color 0.3s; /* Smooth transition effect */
-}
-
-.recommendation-button:hover {
-  background-color: #0062ca;
+.disclaimer {
+  font-size: 10px;
+  color: #999;
+  margin-top: 10px;
 }

@@ -53,7 +53,7 @@ df['processed'] = df['metadata'].apply(preprocess_text)
 df['embedding'] = df['processed'].apply(embed_text)
 
 # query or llm answer goes in here
-generated_text = " innovative, functional, technically impressive"
+generated_text = "hackathon, teamwork, presentation"
 
 
 

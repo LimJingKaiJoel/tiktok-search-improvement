@@ -53,7 +53,7 @@ const SearchResults = ({ query, onBack, onNavigate }) => {
           setAiRecommendation(recommendation);
 
           // New prompt to get keywords
-          const keywordsPrompt = `Based on the following answer, '${recommendation}', give me up to 3 comma separated keywords that can help me find informative and actionable videos on a short form social media app. The keywords should focus on practical advice, strategies, and steps relevant to the query.`;
+          const keywordsPrompt = `Based on the following question, '${query}' , and answer, '${recommendation}', give me up to 3 comma separated keywords that can help me find informative and actionable videos on a short form social media app. The keywords should focus on practical advice, strategies, and steps relevant to the question.`;
           const keywordsResponse = await openai.chat.completions.create({
             model: "gpt-3.5-turbo-0125",
             messages: [

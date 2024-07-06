@@ -9,9 +9,10 @@ from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 import time
 
+nltk.download('punkt')
 start_time = time.time()
 
-df = pd.read_csv('/Users/joellim/iCloud Drive (Archive)/Desktop/tiktok-search-improvement/tiktok-videos-data/videoid_and_metadata.csv')
+df = pd.read_csv('tiktok-videos-data/videoid_and_metadata.csv')
 
 tokenizer = AutoTokenizer.from_pretrained('distilbert-base-uncased')
 model = AutoModel.from_pretrained('distilbert-base-uncased')
@@ -53,6 +54,8 @@ df['embedding'] = df['processed'].apply(embed_text)
 
 # query or llm answer goes in here
 generated_text = "To win a hackathon, you need to collaborate effectively with your team, come up with innovative solutions, demonstrate your coding skills, and present a polished final product to the judges."
+
+
 
 # # if including the query also (worse accuracy)
 # query = "how do i win a hackathon?"

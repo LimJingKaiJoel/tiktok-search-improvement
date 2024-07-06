@@ -10,6 +10,7 @@ const SearchResults = ({ query, onBack, onNavigate }) => {
   const [loadingPrediction, setLoadingPrediction] = useState(true);
   const [loadingRecommendation, setLoadingRecommendation] = useState(false);
   const [aiRecommendation, setAiRecommendation] = useState('');
+  const [keywords, setKeywords] = useState('');
   const openai = new OpenAI({ apiKey: import.meta.env.VITE_OPENAI_API_KEY, dangerouslyAllowBrowser: true });
 
   useEffect(() => {
@@ -18,6 +19,7 @@ const SearchResults = ({ query, onBack, onNavigate }) => {
         try {
           setLoadingPrediction(true);
           setAiRecommendation('');  // Clear previous recommendation
+          setKeywords('');  // Clear previous keywords
           const response = await axios.post('https://tiktok-search-improvement.onrender.com/predict', { text: query });
           setPrediction(response.data.prediction);
         } catch (error) {
@@ -47,10 +49,25 @@ const SearchResults = ({ query, onBack, onNavigate }) => {
               },
             ],
           });
-          setAiRecommendation(response.choices[0].message.content);
+          const recommendation = response.choices[0].message.content;
+          setAiRecommendation(recommendation);
+
+          // New prompt to get keywords
+          const keywordsPrompt = `Based on this following answer, '${recommendation}', give me up to 3 comma separated keywords that can help me semantically match to videos on a short form social media app.`;
+          const keywordsResponse = await openai.chat.completions.create({
+            model: "gpt-3.5-turbo-0125",
+            messages: [
+              {
+                "role": "user",
+                "content": keywordsPrompt,
+              },
+            ],
+          });
+          setKeywords(keywordsResponse.choices[0].message.content);
         } catch (error) {
-          console.error('Error fetching AI recommendation:', error);
+          console.error('Error fetching AI recommendation or keywords:', error);
           setAiRecommendation('Error fetching AI recommendation');
+          setKeywords('Error fetching keywords');
         } finally {
           setLoadingRecommendation(false);
         }
@@ -90,6 +107,7 @@ const SearchResults = ({ query, onBack, onNavigate }) => {
                   : aiRecommendation
                 : "Your query is not a question, so no specific AI recommendations are displayed"}
             </p>
+            <p>{!loadingRecommendation && keywords && `Keywords: ${keywords}`}</p>
             <p className="disclaimer">Always verify important information.</p>
           </div>
         </div>

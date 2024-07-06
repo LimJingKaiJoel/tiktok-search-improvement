@@ -1,3 +1,4 @@
+from sklearn.model_selection import GridSearchCV
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -30,34 +31,28 @@ vectorizer = TfidfVectorizer(stop_words='english', max_features=5000)
 X_train_tfidf = vectorizer.fit_transform(X_train)
 X_test_tfidf = vectorizer.transform(X_test)
 
-# Train the SVM classifier with an RBF kernel
-svm_rbf = SVC(kernel='rbf', gamma='scale', random_state=42)
-svm_rbf.fit(X_train_tfidf, y_train)
+# Define the parameter grid for SVM
+param_grid = {
+    'C': [0.1, 1, 10],
+    'gamma': ['scale', 0.1, 1],
+    'kernel': ['rbf', 'poly', 'sigmoid']
+}
 
-# Predict on the test set using the RBF kernel SVM
-y_pred_rbf = svm_rbf.predict(X_test_tfidf)
+# Initialize the GridSearchCV object
+grid_search = GridSearchCV(SVC(random_state=42), param_grid, cv=5, scoring='accuracy')
 
-# Evaluate the RBF kernel SVM
-print("\nRBF Kernel SVM")
-print(classification_report(y_test, y_pred_rbf))
-print(f'Accuracy: {accuracy_score(y_test, y_pred_rbf)}')
+# Fit GridSearchCV to the data
+grid_search.fit(X_train_tfidf, y_train)
 
-qn = "how do i win a hackathon"
-nonqn = "beautiful sunset"
+# Print the best parameters and best score
+print("Best parameters found: ", grid_search.best_params_)
+print("Best cross-validation score: ", grid_search.best_score_)
 
-samples = [qn, nonqn]
-samples_tfidf = vectorizer.transform(samples)
+# Use the best estimator to make predictions
+best_svm = grid_search.best_estimator_
+y_pred_best_svm = best_svm.predict(X_test_tfidf)
 
-# nonlinear
-sample_pred_rbf = svm_rbf.predict(samples_tfidf)
-print("\nRBF Kernel SVM Predictions on Samples:")
-for sample, pred in zip(samples, sample_pred_rbf):
-    print(f'Sample: "{sample}" -> Prediction: {"Question" if pred == 1 else "Non-Question"}')
-
-# Save the RBF SVM model
-with open('svm_rbf_model.pkl', 'wb') as f:
-    pickle.dump(svm_rbf, f)
-
-# Save the vectorizer
-with open('vectorizer.pkl', 'wb') as f:
-    pickle.dump(vectorizer, f)
+# Evaluate the best estimator
+print("\nBest SVM Model")
+print(classification_report(y_test, y_pred_best_svm))
+print(f'Accuracy: {accuracy_score(y_test, y_pred_best_svm)}')

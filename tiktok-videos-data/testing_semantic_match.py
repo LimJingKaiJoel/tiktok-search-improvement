@@ -8,6 +8,8 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 import time
+import pickle
+import os
 
 nltk.download('punkt')
 nltk.download('stopwords')
@@ -21,7 +23,7 @@ df_metadata = pd.read_csv('tiktok-videos-data/videoid_and_metadata.csv')
 # Read the transcriptions CSV file
 df_transcriptions = pd.read_csv('tiktok-videos-data/transcriptions.csv')
 
-# Merge the two DataFrames on the 'ID' column
+# Merge the two DataFrames on the 'id' column
 df = pd.merge(df_metadata, df_transcriptions, on='id')
 
 # Concatenate the 'metadata' and 'Text' fields
@@ -41,6 +43,7 @@ def preprocess_text(text):
     return ' '.join(lemmatized_tokens)
 
 def embed_text(text):
+    # NOTE: change comment to unpreprocess the text
     processed_text = preprocess_text(text)
     inputs = tokenizer(processed_text, return_tensors='pt', truncation=True, padding=True)
     with torch.no_grad():
@@ -60,19 +63,32 @@ def find_top_matches(generated_text, df, top_x):
     top_matches['similarity'] = similarities[top_indices]
     return top_matches
 
-# Preprocess and embed the combined text
-df['processed'] = df['combined_text'].apply(preprocess_text)
-df['embedding'] = df['processed'].apply(embed_text)
+# Check if embeddings file exists
+# NOTE: if you change something, you might have to delete pkl file and rerun code to generate new pkl
+embeddings_file = 'embeddings.pkl'
+if os.path.exists(embeddings_file):
+    with open(embeddings_file, 'rb') as f:
+        embeddings_dict = pickle.load(f)
+    df_embeddings = pd.DataFrame(embeddings_dict)
+    df_embeddings['embedding'] = df_embeddings['embedding'].apply(np.array)
+else:
+    # Embed and save embeddings if not already saved
+    # NOTE: PREPROCESSED in embed_text method (seems like better accuracy)
+    df['embedding'] = df['combined_text'].apply(embed_text)
+    with open(embeddings_file, 'wb') as f:
+        pickle.dump(df[['id', 'embedding']].to_dict(), f)
+    df_embeddings = df[['id', 'embedding']]
 
-# Query or LLM answer goes here
-generated_text = "how to win a hackathon"
+df = pd.merge(df, df_embeddings, on='id', how='left')
+
+# NOTE: Vince pls move the query answer by the LLM to replace this generated text if query is a question
+generated_text = "To win a hackathon, focus on addressing the problem statement creatively and effectively, ensuring your solution is feasible and well-executed, and clearly communicate your project's value and impact to the judges. Prioritize teamwork, efficient time management, and leveraging each team member's strengths."
 
 top_x = 5
+
+# NOTE: call this find_top_matches function to get the id of the videos that we want to recommend
 top_matches = find_top_matches(generated_text, df, top_x)
 print(top_matches)
-
-# To extract the ID, you can call top_matches['ID']
-print(top_matches['id'])
 
 end_time = time.time()
 time_taken = end_time - start_time

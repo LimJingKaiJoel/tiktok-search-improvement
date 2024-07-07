@@ -100,7 +100,7 @@ const SearchResults = ({ query, onBack, onVideoSelect }) => {
   const [loadingRecommendation, setLoadingRecommendation] = useState(false);
   const [aiRecommendation, setAiRecommendation] = useState('');
   const [videoIds, setVideoIds] = useState([]);
-  const [hasFetchedVideos, setHasFetchedVideos] = useState(false);
+  const [apiFailed, setApiFailed] = useState(false);
   const openai = new OpenAI({ apiKey: import.meta.env.VITE_OPENAI_API_KEY, dangerouslyAllowBrowser: true });
 
   useEffect(() => {
@@ -141,20 +141,28 @@ const SearchResults = ({ query, onBack, onVideoSelect }) => {
           const recommendation = response.choices[0].message.content;
           setAiRecommendation(recommendation);
 
-          // Make API call to http://127.0.0.1:8000/query
-          const queryResponse = await axios.post('http://127.0.0.1:8000/query', {
-            text: recommendation,
-            top_x: 5
-          });
+          try {
+            // Make API call to http://127.0.0.1:8000/query
+            const queryResponse = await axios.post('http://127.0.0.1:8000/query', {
+              text: recommendation,
+              top_x: 5
+            });
 
-          // Extract video IDs from the API response
-          const videoData = queryResponse.data;
-          const ids = videoData.map(video => video.id).concat(41);
-          setVideoIds(ids);
+            // Extract video IDs from the API response
+            const videoData = queryResponse.data;
+            const ids = videoData.map(video => video.id).concat(41);
+            setVideoIds(ids);
+            setApiFailed(false); // Reset the apiFailed state if API call succeeds
+          } catch (apiError) {
+            console.error('Error fetching video IDs from local host:', apiError);
+            setVideoIds([8, 2, 25, 4, 6, 41]);
+            setApiFailed(true); // Set the apiFailed state to true if API call fails
+          }
+
         } catch (error) {
-          console.error('Error fetching AI recommendation or video IDs:', error);
+          console.error('Error fetching AI recommendation:', error);
           setAiRecommendation('Error fetching AI recommendation');
-          setVideoIds([]);
+          setVideoIds([8, 2, 25, 4, 6, 41]);
         } finally {
           setLoadingRecommendation(false);
         }
@@ -163,6 +171,7 @@ const SearchResults = ({ query, onBack, onVideoSelect }) => {
       handleGetRecommendations();
     }
   }, [prediction]);
+
 
   return (
     <div className="search-results">
@@ -189,13 +198,14 @@ const SearchResults = ({ query, onBack, onVideoSelect }) => {
             </p>
             <p>
               {loadingPrediction
-                ? "Loading prediction..."
+                ? "Loading prediction, this may take up to a minute if the server is asleep"
                 : prediction === 'Question'
-                ? loadingRecommendation
-                  ? "Your query has been identified to be a question, loading recommendations"
-                  : aiRecommendation
-                : "Your query is not a question, so no specific AI recommendations are displayed"}
+                  ? loadingRecommendation
+                    ? "Your query has been identified to be a question, loading recommendations"
+                    : aiRecommendation
+                  : "Your query is not a question, so no specific AI recommendations are displayed"}
             </p>
+            {apiFailed && !loadingRecommendation && <p>Sorry, the API server is down so here are some previously recommended videos:</p>}
             <div className="result-items">
               {videoIds.map(id => (
                 <div className="result-item" key={id} onClick={() => onVideoSelect(videoMap[id])}>
@@ -207,6 +217,7 @@ const SearchResults = ({ query, onBack, onVideoSelect }) => {
                 </div>
               ))}
             </div>
+
             <p className="disclaimer">Always verify important information.</p>
           </div>
         </div>

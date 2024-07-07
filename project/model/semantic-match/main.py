@@ -6,17 +6,8 @@ import torch
 from sklearn.metrics.pairwise import cosine_similarity
 from transformers import AutoTokenizer, AutoModel
 from fastapi.middleware.cors import CORSMiddleware
-import nltk
-from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
-from nltk.stem import WordNetLemmatizer
 import os
 import pickle
-
-# Download necessary NLTK resources
-nltk.download('punkt')
-nltk.download('stopwords')
-nltk.download('wordnet')
 
 app = FastAPI()
 
@@ -43,14 +34,22 @@ df = pd.merge(df_metadata, df_transcriptions, on='id')
 
 # Concatenate the 'metadata' and 'Text' fields
 df['combined_text'] = df['metadata'] + ' ' + df['Text']
-
 tokenizer = AutoTokenizer.from_pretrained('distilbert-base-uncased')
 model = AutoModel.from_pretrained('distilbert-base-uncased')
 
-stop_words = set(stopwords.words('english'))
-lemmatizer = WordNetLemmatizer()
-
 def preprocess_text(text):
+    from nltk.tokenize import word_tokenize
+    from nltk.corpus import stopwords
+    from nltk.stem import WordNetLemmatizer
+    import nltk
+
+    nltk.download('punkt')
+    nltk.download('stopwords')
+    nltk.download('wordnet')
+
+    stop_words = set(stopwords.words('english'))
+    lemmatizer = WordNetLemmatizer()
+
     tokens = word_tokenize(text)
     tokens = [word for word in tokens if word.isalnum()]
     tokens = [word.lower() for word in tokens if word.lower() not in stop_words]
@@ -58,7 +57,6 @@ def preprocess_text(text):
     return ' '.join(lemmatized_tokens)
 
 def embed_text(text):
-    # NOTE: change comment to unpreprocess the text
     processed_text = preprocess_text(text)
     inputs = tokenizer(processed_text, return_tensors='pt', truncation=True, padding=True)
     with torch.no_grad():
@@ -74,13 +72,11 @@ def find_top_matches(generated_text, df, top_x):
     top_indices = similarities.argsort()[-top_x:][::-1]
 
     # Select the relevant columns for the top matches
-    
     top_matches = df.iloc[top_indices][['id', 'good result', 'combined_text']].copy()
     top_matches['similarity'] = similarities[top_indices]
     return top_matches
 
 # Check if embeddings file exists
-# NOTE: if you change something, you might have to delete pkl file and rerun code to generate new pkl
 embeddings_file = os.path.join(os.path.dirname(__file__), 'pickle-files/embeddings.pkl')
 if os.path.exists(embeddings_file):
     with open(embeddings_file, 'rb') as f:
@@ -88,8 +84,6 @@ if os.path.exists(embeddings_file):
     df_embeddings = pd.DataFrame(embeddings_dict)
     df_embeddings['embedding'] = df_embeddings['embedding'].apply(np.array)
 else:
-    # Embed and save embeddings if not already saved
-    # NOTE: PREPROCESSED in embed_text method (seems like better accuracy)
     df['embedding'] = df['combined_text'].apply(embed_text)
     with open(embeddings_file, 'wb') as f:
         pickle.dump(df[['id', 'embedding']].to_dict(), f)

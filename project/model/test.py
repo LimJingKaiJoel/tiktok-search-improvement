@@ -23,7 +23,7 @@ with open('best_svm_model.pkl', 'rb') as f:
     best_svm = pickle.load(f)
 
 # Load the saved TF-IDF vectorizer
-with open('tfidf_vectorizer.pkl', 'rb') as f:
+with open('distilbert_vectorizer.pkl', 'rb') as f:
     vectorizer = pickle.load(f)
 
 # Function to predict if a query is a question
@@ -40,7 +40,8 @@ input_queries = [
     "How does photosynthesis work?",
     "Juventus vs Real Madrid",
     "Where is the Eiffel Tower located?",
-    "how do i win a hackathon"
+    "how do i win a hackathon",
+    "In what country is Normandy located"
 ]
 
 # Get predictions

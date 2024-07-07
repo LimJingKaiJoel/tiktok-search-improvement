@@ -10,9 +10,22 @@ from nltk.stem import WordNetLemmatizer
 import time
 
 nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('wordnet')
+
 start_time = time.time()
 
-df = pd.read_csv('tiktok-videos-data/videoid_and_metadata.csv')
+# Read the metadata CSV file
+df_metadata = pd.read_csv('tiktok-videos-data/videoid_and_metadata.csv')
+
+# Read the transcriptions CSV file
+df_transcriptions = pd.read_csv('tiktok-videos-data/transcriptions.csv')
+
+# Merge the two DataFrames on the 'ID' column
+df = pd.merge(df_metadata, df_transcriptions, on='id')
+
+# Concatenate the 'metadata' and 'Text' fields
+df['combined_text'] = df['metadata'] + ' ' + df['Text']
 
 tokenizer = AutoTokenizer.from_pretrained('distilbert-base-uncased')
 model = AutoModel.from_pretrained('distilbert-base-uncased')
@@ -42,33 +55,25 @@ def find_top_matches(generated_text, df, top_x):
     )[0]
     top_indices = similarities.argsort()[-top_x:][::-1]
 
-    # here oso change as needed for header
-    top_matches = df.iloc[top_indices][['id', 'metadata', 'good result']].copy()
+    # Select the relevant columns for the top matches
+    top_matches = df.iloc[top_indices][['id', 'good result', 'combined_text']].copy()
     top_matches['similarity'] = similarities[top_indices]
     return top_matches
 
-
-# change df header as necessary 
-df['processed'] = df['metadata'].apply(preprocess_text)
+# Preprocess and embed the combined text
+df['processed'] = df['combined_text'].apply(preprocess_text)
 df['embedding'] = df['processed'].apply(embed_text)
 
-# query or llm answer goes in here
-generated_text = "hackathon, teamwork, presentation"
-
-
-
-# # if including the query also (worse accuracy)
-# query = "how do i win a hackathon?"
-# generated_text = query + " " + generated_text
+# Query or LLM answer goes here
+generated_text = "how to win a hackathon"
 
 top_x = 5
-
 top_matches = find_top_matches(generated_text, df, top_x)
 print(top_matches)
 
-# for vince: TO EXTRACT THE ID: CALL top_matches['id'] (but it also prints pandas df default index)
+# To extract the ID, you can call top_matches['ID']
+print(top_matches['id'])
 
-# test
 end_time = time.time()
 time_taken = end_time - start_time
 print(f"Time taken: {time_taken} seconds")

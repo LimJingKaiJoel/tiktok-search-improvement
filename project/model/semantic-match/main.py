@@ -104,3 +104,4 @@ def query(request: QueryRequest):
 # To run the server with Mangum for AWS Lambda
 from mangum import Mangum
 handler = Mangum(app)
+

@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import './SearchScreen.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faSearch } from '@fortawesome/free-solid-svg-icons';
 
 const suggestions = [
   'How Do I Win A Hackathon 🔥',
-  'Programming',
+  'Cute Dogs',
   'TikTok TechJam',
   'What Is The Most Beautiful Country 🔥',
   'Best Cafe In Singapore',
@@ -41,6 +41,7 @@ const SearchScreen = ({ onBack, onSubmit }) => {
     <div className="search-screen">
       <div className="search-bar">
         <FontAwesomeIcon className="back-button" icon={faArrowLeft} onClick={onBack}/>
+        <FontAwesomeIcon className="search-icon" icon={faSearch} />
         <input
           type="text"
           placeholder="Search"

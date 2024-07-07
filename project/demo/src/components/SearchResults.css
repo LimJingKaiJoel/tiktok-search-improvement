@@ -27,10 +27,13 @@
 .search-bar-disabled input {
   font-size: 13px;
   flex: 1;
-  padding: 10px;
-  border: 1px solid #ccc;
+  padding: 10px 10px 10px 30px;
+  background-color: #f0f0f0;
+  color: black;
+  border: 0px solid #c3c3c3;
   height: 10px;
   width: 100%;
+  /* Set a fixed width for the input */
   margin: 0 10px;
   border-radius: 4px;
   pointer-events: none;
@@ -43,7 +46,8 @@
 .tabs {
   display: flex;
   justify-content: space-around;
-  margin-bottom: 5px; /* Reduced space between tabs and AI recommendations */
+  margin-bottom: 5px;
+  /* Reduced space between tabs and AI recommendations */
 }
 
 .tab {
@@ -57,26 +61,33 @@
 }
 
 .result-items {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 10px;
 }
 
 .result-item {
-  width: 48%;
-  margin: 1%;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
-.result-item img {
-  width: 100%;
-  border-radius: 8px;
+.result-item video {
+  width: 40px;
+  margin-right: 10px;
+  pointer-events: none;
+  /* Disable video controls */
+  object-fit: cover;
+  /* Maintain aspect ratio and cover the area */
 }
+
 
 .description {
-  margin-top: 10px;
   color: black;
   font-size: 14px;
+  flex: 1;
 }
 
 .wand-icon {
@@ -85,8 +96,10 @@
 
 .ai-suggestion-box {
   font-size: 12px;
-  padding: 2px 15px; /* Added padding for text */
-  margin: 0 -10px; /* Negative margin to extend background to edges */
+  padding: 2px 15px;
+  /* Added padding for text */
+  margin: 0 -10px;
+  /* Negative margin to extend background to edges */
   background-color: #ff64c629;
 }
 
@@ -96,7 +109,8 @@
 
 .ai-recommendation-content {
   color: #000;
-  text-align: left; /* Align text to the left */
+  text-align: left;
+  /* Align text to the left */
 }
 
 .ai-recommendation-content p {
@@ -104,7 +118,8 @@
 }
 
 .ai-recommendation-content strong {
-  color: #9900ff; /* TikTok Assistant text color in purple */
+  color: #9900ff;
+  /* TikTok Assistant text color in purple */
 }
 
 .disclaimer {

@@ -14,6 +14,7 @@
   
   .search-bar {
     font-size: 13px;
+    
     display: flex;
     align-items: center;
     padding-bottom: 10px;
@@ -27,8 +28,10 @@
   .search-bar input {
     font-size: 13px;
     flex: 1;
-    padding: 10px;
-    border: 1px solid #ccc;
+    padding: 10px 10px 10px 30px;
+    background-color: #f0f0f0;
+    color: black;
+    border: 0px solid #c3c3c3;
     height: 10px;
     width: 100%; /* Set a fixed width for the input */
     margin: 0 10px;
@@ -88,4 +91,10 @@
   
   .prediction-result {
     color: black;
+  }
+
+  .search-icon {
+    color: #636363;
+    position: absolute;
+    margin-left: 30px;
   }

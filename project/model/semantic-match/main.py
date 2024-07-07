@@ -1,17 +1,17 @@
 from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import pandas as pd
 import numpy as np
 import torch
 from sklearn.metrics.pairwise import cosine_similarity
 from transformers import AutoTokenizer, AutoModel
+from fastapi.middleware.cors import CORSMiddleware
 import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
-import pickle
 import os
+import pickle
 
 # Download necessary NLTK resources
 nltk.download('punkt')
@@ -67,13 +67,7 @@ def find_top_matches(generated_text, df, top_x):
     top_matches['similarity'] = similarities[top_indices]
     return top_matches
 
-# Load metadata and transcriptions
-df_metadata = pd.read_csv('tiktok-videos-data/videoid_and_metadata.csv')
-df_transcriptions = pd.read_csv('tiktok-videos-data/transcriptions.csv')
-df = pd.merge(df_metadata, df_transcriptions, on='id')
-df['combined_text'] = df['metadata'] + ' ' + df['Text']
-
-# Load or compute embeddings
+# Load embeddings from pickle file
 embeddings_file = 'pickle-files/embeddings.pkl'
 if os.path.exists(embeddings_file):
     with open(embeddings_file, 'rb') as f:
@@ -81,16 +75,14 @@ if os.path.exists(embeddings_file):
     df_embeddings = pd.DataFrame(embeddings_dict)
     df_embeddings['embedding'] = df_embeddings['embedding'].apply(np.array)
 else:
-    raise HTTPException(status_code=500, detail="Embedding file not found")
-
-df = pd.merge(df, df_embeddings, on='id', how='left')
+    raise FileNotFoundError("Embeddings file not found. Please ensure the embeddings.pkl file is present in the pickle-files directory.")
 
 @app.post("/query")
 def query(request: QueryRequest):
     try:
         generated_text = request.text
         top_x = 5
-        top_matches = find_top_matches(generated_text, df, top_x)
+        top_matches = find_top_matches(generated_text, df_embeddings, top_x)
         return top_matches.to_dict(orient='records')
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Query failed: {str(e)}")

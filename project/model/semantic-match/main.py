@@ -32,16 +32,11 @@ class QueryRequest(BaseModel):
     text: str
     top_x: int
 
-base_path = os.path.dirname(os.path.abspath(__file__))
-project_path = os.path.abspath(os.path.join(base_path, '..', '..', '..'))
-metadata_file_path = os.path.join(project_path, 'tiktok-videos-data', 'videoid_and_metadata.csv')
-transcriptions_file_path = os.path.join(project_path, 'tiktok-videos-data', 'transcriptions.csv')
-
 # Read the metadata CSV file
-df_metadata = pd.read_csv(metadata_file_path)
+df_metadata = pd.read_csv('videoid_and_metadata.csv')
 
 # Read the transcriptions CSV file
-df_transcriptions = pd.read_csv(transcriptions_file_path)
+df_transcriptions = pd.read_csv('transcriptions.csv')
 
 # Merge the two DataFrames on the 'id' column
 df = pd.merge(df_metadata, df_transcriptions, on='id')
@@ -115,8 +110,3 @@ def query(request: QueryRequest):
 # To run the server with Mangum for AWS Lambda
 from mangum import Mangum
 handler = Mangum(app)
-
-if __name__ == "__main__":
-    import uvicorn
-    port = int(os.environ.get("PORT", 8000))
-    uvicorn.run(app, host="0.0.0.0", port=port)

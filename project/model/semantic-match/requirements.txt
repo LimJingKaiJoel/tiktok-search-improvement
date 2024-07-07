@@ -6,4 +6,3 @@ pandas
 scikit-learn
 nltk
 mangum
-uvicorn

@@ -1,0 +1,8 @@
+fastapi
+pydantic
+transformers
+torch
+pandas
+scikit-learn
+nltk
+mangum

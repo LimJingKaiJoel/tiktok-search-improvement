@@ -115,3 +115,8 @@ def query(request: QueryRequest):
 # To run the server with Mangum for AWS Lambda
 from mangum import Mangum
 handler = Mangum(app)
+
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)

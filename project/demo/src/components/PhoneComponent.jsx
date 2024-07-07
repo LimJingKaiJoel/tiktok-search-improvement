@@ -6,11 +6,12 @@ import Sidebar from './Sidebar';
 import TopBar from './TopBar';
 import SearchScreen from './SearchScreen';
 import SearchResults from './SearchResults';
-
+import FullScreenVideo from './FullScreenVideo';
 
 const PhoneComponent = () => {
-  const [screen, setScreen] = useState('home'); // 'home', 'search', 'results'
+  const [screen, setScreen] = useState('home'); // 'home', 'search', 'results', 'fullScreenVideo'
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedVideo, setSelectedVideo] = useState(null);
 
   const handleSearchClick = () => {
     setScreen('search');
@@ -29,6 +30,16 @@ const PhoneComponent = () => {
     setScreen('search');
   };
 
+  const handleVideoSelect = (videoSrc) => {
+    setSelectedVideo(videoSrc);
+    setScreen('fullScreenVideo');
+  };
+
+  const handleBackFromFullScreen = () => {
+    setScreen('results');
+    setSelectedVideo(null);
+  };
+
   return (
     <div className="phone-container">
       <div className="phone">
@@ -36,7 +47,9 @@ const PhoneComponent = () => {
           {screen === 'search' ? (
             <SearchScreen onBack={handleCloseSearch} onSubmit={handleSearchSubmit} />
           ) : screen === 'results' ? (
-            <SearchResults query={searchQuery} onBack={handleBackFromResults} />
+            <SearchResults query={searchQuery} onBack={handleBackFromResults} onVideoSelect={handleVideoSelect} />
+          ) : screen === 'fullScreenVideo' ? (
+            <FullScreenVideo videoSrc={selectedVideo} onBack={handleBackFromFullScreen} />
           ) : (
             <>
               <TopBar onSearchClick={handleSearchClick} />

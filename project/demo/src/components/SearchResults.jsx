@@ -4,6 +4,8 @@ import './SearchResults.css';
 import OpenAI from "openai";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
+import tiktokStar from '../assets/tiktokstar.png'
+import tiktokAI from '../assets/tiktokai.png'
 
 const SearchResults = ({ query, onBack, onNavigate }) => {
   const [prediction, setPrediction] = useState('Loading...');
@@ -95,9 +97,9 @@ const SearchResults = ({ query, onBack, onNavigate }) => {
         </div>
         <div className="ai-suggestion-box">
           <div className="ai-recommendation-content">
-            <p><strong>
-              <FontAwesomeIcon className="wand-icon" icon={faWandMagicSparkles} />
-              Tiktok Assistant</strong></p>
+            <p>
+              <img src={tiktokStar} alt="Description" className="tiktok-star"/>
+              <img src={tiktokAI} alt="Description" className="tiktok-ai" /></p>
             <p>
               {loadingPrediction
                 ? "Loading prediction..."

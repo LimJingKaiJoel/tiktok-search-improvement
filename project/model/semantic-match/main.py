@@ -14,9 +14,6 @@ import os
 import pickle
 
 # Download necessary NLTK resources
-nltk.download('punkt')
-nltk.download('stopwords')
-nltk.download('wordnet')
 
 app = FastAPI()
 

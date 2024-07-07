@@ -4,6 +4,7 @@ import string
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
+import os
 
 # Download necessary NLTK resources
 nltk.download('wordnet')
@@ -18,12 +19,17 @@ def preprocess_text(text):
     words = [lemmatizer.lemmatize(word) for word in words if word not in stopwords.words('english')]
     return ' '.join(words)
 
+# Get the current script directory
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
 # Load the saved model
-with open('best_svm_model.pkl', 'rb') as f:
+model_path = os.path.join(script_dir, 'pickle-files', 'best_svm_model.pkl')
+with open(model_path, 'rb') as f:
     best_svm = pickle.load(f)
 
 # Load the saved TF-IDF vectorizer
-with open('distilbert_vectorizer.pkl', 'rb') as f:
+vectorizer_path = os.path.join(script_dir, 'pickle-files', 'tfidf_vectorizer.pkl')
+with open(vectorizer_path, 'rb') as f:
     vectorizer = pickle.load(f)
 
 # Function to predict if a query is a question

@@ -26,8 +26,8 @@ app.add_middleware(
 class PredictionRequest(BaseModel):
     text: str
 
-model_path = os.path.join(os.path.dirname(__file__), 'best_svm_model.pkl')
-vectorizer_path = os.path.join(os.path.dirname(__file__), 'tfidf_vectorizer.pkl')
+model_path = os.path.join(os.path.dirname(__file__), 'pickle-files/best_svm_model.pkl')
+vectorizer_path = os.path.join(os.path.dirname(__file__), 'pickle-files/tfidf_vectorizer.pkl')
 
 def load_model():
     if not os.path.exists(model_path):

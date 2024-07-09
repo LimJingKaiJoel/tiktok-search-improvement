@@ -29,7 +29,7 @@ The front-end was developed using React and Vite, which allowed us to create a r
 For deploying our application, we used Vercel to host our main website due to its free plans and ease of use. We also considered using Vercel to host our FastAPI server, but we encountered issues with size limits on serverless functions, leading us to pivot to Render. 
 
 ## Challenges we ran into
-We had a lot of issues with deployment due to the serverless size limits, which our dependencies already exceeded. We wanted to utilise AWS Lambda but faced problems with a specific module causing errors during deployment.
+We had a lot of issues with deployment due to the serverless size limits, which our dependencies already exceeded. 
 
 We had trouble finding video data for us to use to test and demo our application and new search function. We tried looking through the TikTok API but were ultimately still unable to find any relevant ones that would have streamlined our development process.
 

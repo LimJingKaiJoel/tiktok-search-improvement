@@ -109,7 +109,7 @@ const SearchResults = ({ query, onBack, onVideoSelect }) => {
         try {
           setLoadingPrediction(true);
           setAiRecommendation('');  // Clear previous recommendation
-          const response = await axios.post('https://tiktok-search-improvement.onrender.com/predict', { text: query });
+          const response = await axios.post('https://lcsse6am7bchotzxyqo7i4aiuu0gtsat.lambda-url.ap-southeast-1.on.aws/predict', { text: query });
           setPrediction(response.data.prediction);
         } catch (error) {
           console.error('Error fetching prediction:', error);
@@ -143,7 +143,7 @@ const SearchResults = ({ query, onBack, onVideoSelect }) => {
 
           try {
             // Make API call to http://127.0.0.1:8000/query
-            const queryResponse = await axios.post('http://127.0.0.1:8000/query', {
+            const queryResponse = await axios.post('https://drlyecflxyc7tsigr2vyrkjbmq0dsalc.lambda-url.ap-southeast-1.on.aws/query', {
               text: recommendation,
               top_x: 5
             });

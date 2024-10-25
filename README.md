@@ -1,7 +1,7 @@
 # <img src="logo.png" alt="Search&Answer Logo" width="25"/> Search&Answer <img src="logo.png" alt="Search&Answer Logo" width="25"/>
 
 ## Figure
-![Search Screen with Quick LLM Answer and Better Results](/assets/Tiktok_Search.png)
+![Search Screen with Quick LLM Answer and Better Results](/assets/TikTok_Search_Page.jpg)
 *Figure 1: Search Screen with Quick LLM Answer and Better Results*
 
 ## Inspiration

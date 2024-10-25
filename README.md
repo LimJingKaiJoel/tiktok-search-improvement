@@ -1,5 +1,9 @@
 # <img src="logo.png" alt="Search&Answer Logo" width="25"/> Search&Answer <img src="logo.png" alt="Search&Answer Logo" width="25"/>
 
+## Figure
+![Search Screen with Quick LLM Answer and Better Results](/assets/TikTok_Search_Page.jpg)
+*Figure 1: Search Screen with Quick LLM Answer and Better Results*
+
 ## Inspiration
 Our team loves making existing features of the app better using machine learning models and generative AI. As frequent users of TikTok, we started off by identifying the biggest pain points of the app we personally face, and then brainstorming on what we can do to fix this issue.
 
